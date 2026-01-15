@@ -1,0 +1,33 @@
+@startuml
+
+class Main {
+    + {static} main(args : String[]) : void
+}
+
+class K8sClientFactory {
+    + createApi() : CoreV1Api
+}
+
+interface PodListener {
+    + onEvent(pod : V1Pod, eventType : String) : void
+}
+
+class PodEventWatcher {
+    + PodEventWatcher(api : CoreV1Api, listener : PodListener)
+    + start() : void
+}
+
+class PodHealthMonitor {
+    + onEvent(pod : V1Pod, eventType : String) : void
+}
+
+
+Main ..> K8sClientFactory : <<usa>>
+Main ..> PodEventWatcher : <<crea>>
+Main ..> PodHealthMonitor : <<crea>>
+
+PodListener <|.. PodHealthMonitor
+
+PodEventWatcher o--> PodListener : "notifica a"
+
+@enduml

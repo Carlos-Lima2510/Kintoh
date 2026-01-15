@@ -10,6 +10,10 @@
 
 ---
 
+## Diagrama de Interfaz Pública
+
+![Vista Pública](/documents/vistaPública.png)   
+
 ## 🚀 Características Principales
 
 * **Vigilancia en Tiempo Real:** Utiliza la API de `Watch` de Kubernetes para recibir eventos (streaming) en lugar de hacer polling constante.
