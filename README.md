@@ -47,7 +47,7 @@ mvn clean compile
 Inicia la aplicación. Verás un mensaje indicando que la vigilancia ha comenzado:
 
 ```bash
-mvn exec:java -Dexec.mainClass="com.vigilant.Main"
+mvn exec:java -Dexec.mainClass="com.kubeVigilant.Main"
 ```
 
 3. **Resultado**
