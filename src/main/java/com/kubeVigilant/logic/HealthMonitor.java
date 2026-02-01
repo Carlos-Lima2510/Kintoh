@@ -5,9 +5,9 @@ import io.kubernetes.client.openapi.models.V1ContainerState;
 import io.kubernetes.client.openapi.models.V1ContainerStatus;
 import java.util.List;
 
-import com.kubeVigilant.watcher.PodListener;
+import com.kubeVigilant.watcher.PodMonitor;
 
-public class PodHealthMonitor implements PodListener {
+public class HealthMonitor implements PodMonitor {
 
     private static final String ERROR_REASON = "CrashLoopBackOff";
 

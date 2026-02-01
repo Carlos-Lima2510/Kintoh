@@ -9,11 +9,11 @@ import okhttp3.Call;
 
 public class EventWatcher {
     private final CoreV1Api api;
-    private final PodListener listener;
+    private final PodMonitor monitor;
 
-    public EventWatcher(CoreV1Api api, PodListener listener) {
+    public EventWatcher(CoreV1Api api, PodMonitor monitor) {
         this.api = api;
-        this.listener = listener;
+        this.monitor = monitor;
     }
 
     public void start() {
@@ -28,7 +28,7 @@ public class EventWatcher {
 
             for (Watch.Response<V1Pod> item : watch) {
                 if (item.object != null) {
-                    listener.onEvent(item.object, item.type);
+                    monitor.onEvent(item.object, item.type);
                 }
             }
         } catch (Exception e) {
