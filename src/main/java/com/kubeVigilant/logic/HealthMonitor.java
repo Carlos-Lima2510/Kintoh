@@ -12,14 +12,15 @@ public class HealthMonitor implements PodMonitor {
     private static final String ERROR_REASON = "CrashLoopBackOff";
 
     public void onEvent(V1Pod pod, String eventType) {
-        if (isPodCrashing(pod)) {
-            reportCrash(pod);
+        V1ContainerStatus status = getPodCrashing(pod);
+        if (status != null) {
+            reportCrash(pod,status);
         }
     }
 
-    private boolean isPodCrashing(V1Pod pod) {
+    private V1ContainerStatus getPodCrashing(V1Pod pod) {
         if (pod.getStatus() == null || pod.getStatus().getContainerStatuses() == null) {
-            return false;
+            return null;
         }
 
         List<V1ContainerStatus> statuses = pod.getStatus().getContainerStatuses();
@@ -29,13 +30,13 @@ public class HealthMonitor implements PodMonitor {
             if (state != null 
                 && state.getWaiting() != null 
                 && ERROR_REASON.equals(state.getWaiting().getReason())) {
-                return true;
+                return status;
             }
         }
-        return false;
+        return null;
     }
 
-    private void reportCrash(V1Pod pod) {
+    private void reportCrash(V1Pod pod, V1ContainerStatus container) {
         String podName = pod.getMetadata().getName();
         String namespace = pod.getMetadata().getNamespace();
         
@@ -43,6 +44,7 @@ public class HealthMonitor implements PodMonitor {
         System.out.println(" -- DETECCIÓN DE FALLO CRÍTICO -- ");
         System.out.println("    * Pod: " + podName);
         System.out.println("    * NS:  " + namespace);
+        System.out.println("    * Contenedor: " + container.getName());
         System.out.println("    * Estado: " + ERROR_REASON);
         System.out.println("--------------------------------------------------");
     }
