@@ -34,20 +34,18 @@
 
 ## ⚡ Guía de Inicio Rápido
 
-1. **Compilar el proyecto**
-
-Limpia los target antiguos y compila las fuentes:
+1. **Construir el proyecto**
 
 ```bash
-mvn clean compile
+docker build . -t kubevigilant:v1
 ```
 
 2. **Ejecutar el vigilante**
 
-Inicia la aplicación. Verás un mensaje indicando que la vigilancia ha comenzado:
+Para ejecutarlo fuera del cluster:
 
 ```bash
-mvn exec:java -Dexec.mainClass="com.kubeVigilant.Main"
+docker run -it --rm -v ~/.kube/config:/root/.kube/config kubevigilant:v1
 ```
 
 3. **Resultado**
