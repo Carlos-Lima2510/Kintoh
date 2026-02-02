@@ -5,11 +5,16 @@ import io.kubernetes.client.openapi.models.V1ContainerState;
 import io.kubernetes.client.openapi.models.V1ContainerStatus;
 import java.util.List;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
 import com.kubeVigilant.watcher.PodMonitor;
 
 public class HealthMonitor implements PodMonitor {
 
     private static final String ERROR_REASON = "CrashLoopBackOff";
+
+    private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     public void onEvent(V1Pod pod, String eventType) {
         V1ContainerStatus status = getPodCrashing(pod);
@@ -39,9 +44,12 @@ public class HealthMonitor implements PodMonitor {
     private void reportCrash(V1Pod pod, V1ContainerStatus container) {
         String podName = pod.getMetadata().getName();
         String namespace = pod.getMetadata().getNamespace();
+
+        String timestamp = LocalDateTime.now().format(DATE_FORMATTER);
         
         System.out.println("\n--------------------------------------------------");
         System.out.println(" -- DETECCIÓN DE FALLO CRÍTICO -- ");
+        System.out.println("    * Hora: " + timestamp);
         System.out.println("    * Pod: " + podName);
         System.out.println("    * NS:  " + namespace);
         System.out.println("    * Contenedor: " + container.getName());
