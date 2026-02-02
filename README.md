@@ -53,9 +53,12 @@ docker run -it --rm -v ~/.kube/config:/root/.kube/config kubevigilant:v1
 En la terminal de KubeVigilant deberías ver inmediatamente:
 
 ```text
-🚨 DETECCIÓN DE FALLO CRÍTICO
-   📦 Pod: pod-suicida
-   🏷️  NS:  default
-   📦 Contenedor: nombre-del-contenedor
-   💥 Estado: CrashLoopBackOff
+--------------------------------------------------
+ -- DETECCIÓN DE FALLO CRÍTICO -- 
+    * Hora: 2026-02-02 00:00:00
+    * Pod: pod-suicida
+    * NS:  default
+    * Contenedor: nombre-del-contenedor
+    * Estado: CrashLoopBackOff
+--------------------------------------------------
 ```
