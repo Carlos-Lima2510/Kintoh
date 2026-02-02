@@ -58,5 +58,6 @@ En la terminal de KubeVigilant deberías ver inmediatamente:
 🚨 DETECCIÓN DE FALLO CRÍTICO
    📦 Pod: pod-suicida
    🏷️  NS:  default
+   📦 Contenedor: nombre-del-contenedor
    💥 Estado: CrashLoopBackOff
 ```
