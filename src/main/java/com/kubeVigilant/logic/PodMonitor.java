@@ -8,9 +8,9 @@ import java.util.List;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-import com.kubeVigilant.watcher.PodMonitor;
+import com.kubeVigilant.watcher.Monitor;
 
-public class HealthMonitor implements PodMonitor {
+public class PodMonitor implements Monitor<V1Pod> {
 
     private static final String ERROR_REASON = "CrashLoopBackOff";
 
