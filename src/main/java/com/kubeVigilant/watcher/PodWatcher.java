@@ -10,14 +10,14 @@ import com.google.gson.reflect.TypeToken;
 
 import okhttp3.Call;
 
-public class EventWatcher {
+public class PodWatcher {
     private final CoreV1Api api;
-    private final PodMonitor monitor;
+    private final Monitor<V1Pod> monitor;
     private final AtomicBoolean running = new AtomicBoolean(false);
     private static final int MAX_RETRIES = 5;
     private int currentRetries = 0;
 
-    public EventWatcher(CoreV1Api api, PodMonitor monitor) {
+    public PodWatcher(CoreV1Api api, Monitor<V1Pod> monitor) {
         this.api = api;
         this.monitor = monitor;
     }
