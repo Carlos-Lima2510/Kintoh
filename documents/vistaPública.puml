@@ -8,26 +8,27 @@ class K8sClientFactory {
     + createApi() : CoreV1Api
 }
 
-interface PodMonitor {
-    + onEvent(pod : V1Pod, eventType : String) : void
+interface "Monitor<T>" as Monitor {
+    + onEvent(resource : T, eventType : String) : void
 }
 
-class EventWatcher {
-    + EventWatcher(api : CoreV1Api, monitor : PodMonitor)
+class PodWatcher {
+    - monitor : Monitor<V1Pod>
+    + PodWatcher(api : CoreV1Api, monitor : Monitor<V1Pod>)
     + start() : void
 }
 
-class HealthMonitor {
+class PodMonitor {
     + onEvent(pod : V1Pod, eventType : String) : void
 }
 
 
 Main ..> K8sClientFactory : <<usa>>
-Main ..> EventWatcher : <<crea>>
-Main ..> HealthMonitor : <<crea>>
+Main ..> PodWatcher : <<crea>>
+Main ..> PodMonitor : <<crea>>
 
-PodMonitor <|.. HealthMonitor
+Monitor <|.. PodMonitor 
 
-EventWatcher o--> PodMonitor : "notifica a"
+PodWatcher o--> Monitor : "usa"
 
 @enduml
