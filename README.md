@@ -1,4 +1,4 @@
-# 🛡️ KubeVigilant
+# 🛡️ Kintoh
 
 > Un monitor de salud para Kubernetes ligero, en tiempo real y tolerante a fallos, construido con Java y la API oficial de Kubernetes.
 
@@ -6,7 +6,7 @@
 ![Kubernetes](https://img.shields.io/badge/Kubernetes-Client-326CE5?style=flat&logo=kubernetes&logoColor=white)
 ![Build](https://img.shields.io/badge/build-Maven-C71A36?style=flat&logo=apache-maven&logoColor=white)
 
-**KubeVigilant** es una herramienta de observabilidad que se conecta a tu clúster local (MicroK8s/Minikube) y vigila continuamente el ciclo de vida de los Pods. Su objetivo principal es la detección proactiva del temido estado `CrashLoopBackOff`, alertando en consola mucho antes de que un humano revise el dashboard.
+**Kintoh** es una herramienta de observabilidad que se conecta a tu clúster local (MicroK8s/Minikube) y vigila continuamente el ciclo de vida de los Pods. Su objetivo principal es la detección proactiva del temido estado `CrashLoopBackOff`, alertando en consola mucho antes de que un humano revise el dashboard.
 
 [![Architecture](https://img.shields.io/badge/Architecture-View%20Public%20API-007EC6?style=for-the-badge&logo=uml&logoColor=white)](/documents/vistaPública.png) 
 
@@ -37,7 +37,7 @@
 1. **Construir el proyecto**
 
 ```bash
-docker build . -t kubevigilant:v1
+docker build . -t kintoh:v1
 ```
 
 2. **Ejecutar el vigilante**
@@ -45,7 +45,7 @@ docker build . -t kubevigilant:v1
 Para ejecutarlo fuera del cluster:
 
 ```bash
-docker run -it --rm -v ~/.kube/config:/root/.kube/config kubevigilant:v1
+docker run -it --rm -v ~/.kube/config:/root/.kube/config kintoh:v1
 ```
 
 3. **Resultado**
