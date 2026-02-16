@@ -1,8 +1,8 @@
-package com.kubeVigilant;
+package com.kintoh;
 
-import com.kubeVigilant.core.K8sClientFactory;
-import com.kubeVigilant.logic.PodMonitor;
-import com.kubeVigilant.watcher.PodWatcher;
+import com.kintoh.core.K8sClientFactory;
+import com.kintoh.logic.PodMonitor;
+import com.kintoh.watcher.PodWatcher;
 
 import io.kubernetes.client.openapi.apis.CoreV1Api;
 

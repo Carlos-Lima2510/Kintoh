@@ -1,4 +1,4 @@
-package com.kubeVigilant.watcher;
+package com.kintoh.watcher;
 
 import io.kubernetes.client.openapi.apis.CoreV1Api;
 import io.kubernetes.client.openapi.models.V1Pod;

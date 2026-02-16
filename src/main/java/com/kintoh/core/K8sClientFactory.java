@@ -1,4 +1,4 @@
-package com.kubeVigilant.core;
+package com.kintoh.core;
 
 import io.kubernetes.client.openapi.ApiClient;
 import io.kubernetes.client.openapi.apis.CoreV1Api;

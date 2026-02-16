@@ -1,14 +1,14 @@
-package com.kubeVigilant.logic;
+package com.kintoh.logic;
 
 import io.kubernetes.client.openapi.models.V1Pod;
 import io.kubernetes.client.openapi.models.V1ContainerState;
 import io.kubernetes.client.openapi.models.V1ContainerStatus;
 import java.util.List;
 
+import com.kintoh.watcher.Monitor;
+
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-
-import com.kubeVigilant.watcher.Monitor;
 
 public class PodMonitor implements Monitor<V1Pod> {
 
