@@ -19,16 +19,36 @@ class PodWatcher {
 }
 
 class PodMonitor {
+    - notifiers : List<Notifier>
+    + addNotifier(notifier : Notifier) : void
     + onEvent(pod : V1Pod, eventType : String) : void
+}
+
+interface Notifier {
+    + sendAlert(resourceName: String, reason: String, ...) : void
+}
+
+class SlackNotifier {
+    + sendAlert(...) : void
+}
+
+class ConsoleNotifier {
+    + sendAlert(...) : void
 }
 
 
 Main ..> K8sClientFactory : <<usa>>
 Main ..> PodWatcher : <<crea>>
 Main ..> PodMonitor : <<crea>>
+Main ..> SlackNotifier : <<crea>>
+
+PodWatcher o--> Monitor : "usa"
 
 Monitor <|.. PodMonitor 
 
-PodWatcher o--> Monitor : "usa"
+PodMonitor o--> Notifier : "notifica a lista"
+
+Notifier <|.. SlackNotifier
+Notifier <|.. ConsoleNotifier
 
 @enduml

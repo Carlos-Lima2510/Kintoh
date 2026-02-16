@@ -3,24 +3,32 @@ package com.kintoh.logic;
 import io.kubernetes.client.openapi.models.V1Pod;
 import io.kubernetes.client.openapi.models.V1ContainerState;
 import io.kubernetes.client.openapi.models.V1ContainerStatus;
+
+import java.util.ArrayList;
 import java.util.List;
 
 import com.kintoh.watcher.Monitor;
+import com.kintoh.notifications.Notifier;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 public class PodMonitor implements Monitor<V1Pod> {
 
-    private static final String ERROR_REASON = "CrashLoopBackOff";
+    private final List<Notifier> notifiers = new ArrayList<>();
 
+    private static final String ERROR_REASON = "CrashLoopBackOff";
     private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     public void onEvent(V1Pod pod, String eventType) {
         V1ContainerStatus status = getPodCrashing(pod);
         if (status != null) {
-            reportCrash(pod,status);
+            dispatchAlerts(pod, status);
         }
+    }
+
+    public void addNotifier(Notifier notifier) {
+        notifiers.add(notifier);
     }
 
     private V1ContainerStatus getPodCrashing(V1Pod pod) {
@@ -41,19 +49,18 @@ public class PodMonitor implements Monitor<V1Pod> {
         return null;
     }
 
-    private void reportCrash(V1Pod pod, V1ContainerStatus container) {
-        String podName = pod.getMetadata().getName();
+    private void dispatchAlerts(V1Pod pod, V1ContainerStatus container) {
         String namespace = pod.getMetadata().getNamespace();
-
+        String podName = pod.getMetadata().getName();
+        String reason = container.getState().getWaiting().getReason();
         String timestamp = LocalDateTime.now().format(DATE_FORMATTER);
-        
-        System.out.println("\n--------------------------------------------------");
-        System.out.println(" -- DETECCIÓN DE FALLO CRÍTICO -- ");
-        System.out.println("    * Hora: " + timestamp);
-        System.out.println("    * Pod: " + podName);
-        System.out.println("    * NS:  " + namespace);
-        System.out.println("    * Contenedor: " + container.getName());
-        System.out.println("    * Estado: " + ERROR_REASON);
-        System.out.println("--------------------------------------------------");
+
+        for (Notifier notifier : notifiers) {
+            try {
+                notifier.sendAlert(pod.getKind(), podName, namespace, reason, timestamp);
+            } catch (Exception e) {
+                System.err.println("Error enviando notificación: " + e.getMessage());
+            }
+        }
     }
 }
