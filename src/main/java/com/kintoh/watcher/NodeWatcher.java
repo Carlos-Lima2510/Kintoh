@@ -4,39 +4,39 @@ import com.google.gson.reflect.TypeToken;
 import com.kintoh.domain.Event;
 import com.kintoh.domain.Monitor;
 import com.kintoh.domain.Notifier;
-import com.kintoh.k8s.K8sPodResource;
+import com.kintoh.k8s.K8sNodeResource;
 import io.kubernetes.client.openapi.apis.CoreV1Api;
-import io.kubernetes.client.openapi.models.V1Pod;
+import io.kubernetes.client.openapi.models.V1Node;
 import io.kubernetes.client.util.Watch;
 
 import java.util.List;
 import java.util.Optional;
 
-public class PodWatcher extends AbstractK8sWatcher {
+public class NodeWatcher extends AbstractK8sWatcher {
     private final CoreV1Api api;
     private final Monitor monitor;
     private final List<Notifier> notifiers;
 
-    public PodWatcher(CoreV1Api api, Monitor monitor, List<Notifier> notifiers) {
-        super("K8s-Pod-Watcher");
+    public NodeWatcher(CoreV1Api api, Monitor monitor, List<Notifier> notifiers) {
+        super("K8s-Node-Watcher");
         this.api = api;
         this.monitor = monitor;
         this.notifiers = notifiers;
     }
 
     protected void performWatch() throws Exception {
-        try (Watch<V1Pod> watch = Watch.createWatch(
+        try (Watch<V1Node> watch = Watch.createWatch(
                 api.getApiClient(),
-                api.listPodForAllNamespacesCall(null, null, null, null, null, null, null, null, null, null, Boolean.TRUE, null),
-                new TypeToken<Watch.Response<V1Pod>>() {}.getType())) {
+                api.listNodeCall(null, null, null, null, null, null, null, null, null, null, Boolean.TRUE, null),
+                new TypeToken<Watch.Response<V1Node>>() {}.getType())) {
 
             resetRetries();
 
-            for (Watch.Response<V1Pod> item : watch) {
+            for (Watch.Response<V1Node> item : watch) {
                 if (!running.get()) break;
 
                 if (item.object != null) {
-                    K8sPodResource resource = new K8sPodResource(item.object);
+                    K8sNodeResource resource = new K8sNodeResource(item.object);
                     Optional<Event> potentialEvent = monitor.check(resource);
                     potentialEvent.ifPresent(event -> notifiers.forEach(notifier -> notifier.send(event)));
                 }
