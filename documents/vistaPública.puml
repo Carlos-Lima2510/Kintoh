@@ -1,34 +1,37 @@
 @startuml
 
-class Main {
-    + {static} main(args : String[]) : void
-}
-
-class K8sClientFactory {
-    + createApi() : CoreV1Api
-}
-
-interface "Monitor<T>" as Monitor {
-    + onEvent(resource : T, eventType : String) : void
-}
-
-class PodWatcher {
-    - monitor : Monitor<V1Pod>
-    + PodWatcher(api : CoreV1Api, monitor : Monitor<V1Pod>)
+interface "Watcher" as IWatcher {
+    - monitor : IMonitor
+    - notifiers : List<INotifier>
+    - resourceType : Class<T>
     + start() : void
 }
 
-class PodMonitor {
-    + onEvent(pod : V1Pod, eventType : String) : void
+interface "Monitor" as IMonitor {
+    + check(resource : IResource) : Optional<Event>
 }
 
+interface "Resource" as IResource {
+    + getName() : String
+    + getStatus() : String
+}
 
-Main ..> K8sClientFactory : <<usa>>
-Main ..> PodWatcher : <<crea>>
-Main ..> PodMonitor : <<crea>>
+interface "Notifier" as INotifier {
+    + send(event : Event) : void
+}
 
-Monitor <|.. PodMonitor 
+class Event {
+    + timestamp : DateTime
+    + severity : String
+    + message : String
+}
 
-PodWatcher o--> Monitor : "usa"
+IWatcher o-- IMonitor
+IWatcher o-- INotifier
+
+IMonitor ..> IResource
+IMonitor ..> Event
+INotifier ..> Event
+Event --> IResource
 
 @enduml
