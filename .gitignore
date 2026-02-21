@@ -11,3 +11,5 @@ dependency-reduced-pom.xml
 
 .vscode/
 .github/
+
+.env

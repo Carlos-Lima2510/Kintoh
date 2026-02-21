@@ -10,7 +10,7 @@
 
 [![Architecture](https://img.shields.io/badge/Architecture-View%20Public%20API-007EC6?style=for-the-badge&logo=uml&logoColor=white)](/documents/vistaPública.png) 
 
-## 🚀 Características Principales
+## Características Principales
 
 * **Vigilancia en Tiempo Real:** Utiliza la API de `Watch` de Kubernetes para recibir eventos (streaming) en lugar de hacer polling constante.
 * **Detección Inteligente:** Algoritmo de filtrado que ignora el ruido de arranque y solo alerta sobre fallos reales de contenedores.
@@ -18,13 +18,15 @@
 
 ---
 
-## 🏗️ Arquitectura del Proyecto
+## Arquitectura del Proyecto
 
-* **Core (`/core`):** Manejo de infraestructura y conexión (Factory Pattern).
-* **Watcher (`/watcher`):** Capa de escucha de eventos crudos de la API de K8s.
-* **Logic (`/logic`):** El "cerebro". Interpreta los eventos y aplica reglas de negocio (ej. ¿Es esto un CrashLoop?).
+* **Domain (`/domain`):** El corazón de la aplicación. Contiene las interfaces puras y contratos (`Monitor`, `Watcher`, `Notifier`, `Resource`, `Event`).
+* **Core / K8s (`/core` o `/k8s`):** Manejo de infraestructura y adaptadores. Convierte los objetos crudos de la API de Kubernetes en recursos de nuestro dominio (`K8sPodResource`, `K8sNodeResource`).
+* **Watcher (`/watcher`):** Implementa el patrón *Template Method* (`AbstractK8sWatcher`) para gestionar hilos, resiliencia (reintentos) y ciclo de vida de forma centralizada.
+* **Logic (`/logic`):** Implementaciones concretas de las reglas de negocio (ej. `PodCrashMonitor` para detectar `CrashLoopBackOff` y `NodeMonitor` para caídas de servidores).
+* **Notifiers (`/notifiers`):** Capa de salida intercambiable. Se encarga de formatear y despachar los eventos generados (ej. `ConsoleNotifier`).
 
-## 🛠️ Pre-requisitos
+## Pre-requisitos
 
 - **Java JDK 11 o superior.**
 
@@ -32,7 +34,7 @@
 
 - Un clúster de Kubernetes corriendo localmente (**MicroK8s, Minikube, Docker Desktop**).
 
-## ⚡ Guía de Inicio Rápido
+## Guía de Inicio Rápido
 
 1. **Construir el proyecto**
 
@@ -50,15 +52,14 @@ docker run -it --rm -v ~/.kube/config:/root/.kube/config kintoh:v1
 
 3. **Resultado**
 
-En la terminal de KubeVigilant deberías ver inmediatamente:
+En la terminal de Kintoh deberías ver inmediatamente:
 
 ```text
 --------------------------------------------------
- -- DETECCIÓN DE FALLO CRÍTICO -- 
-    * Hora: 2026-02-02 00:00:00
-    * Pod: pod-suicida
-    * NS:  default
-    * Contenedor: nombre-del-contenedor
-    * Estado: CrashLoopBackOff
+    [CRÍTICO] DETECCIÓN DE ANOMALÍA 
+    * Hora:    2026-02-21 23:35:42
+    * Recurso: nginx-crash
+    * Ámbito:  default
+    * Info:    El contenedor 'nginx' ha entrado en estado CrashLoopBackOff
 --------------------------------------------------
 ```
