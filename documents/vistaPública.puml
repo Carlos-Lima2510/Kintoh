@@ -12,8 +12,8 @@ interface "Monitor" as IMonitor {
 }
 
 interface "Resource" as IResource {
-    + getName() : String
-    + getStatus() : String
+    + name() : String
+    + namespace() : String
 }
 
 interface "Notifier" as INotifier {
